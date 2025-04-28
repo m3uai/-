@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>نموذج التوظيف - إرسال الملفات إلى Gmail عبر Formspree</title>
-
+  <title>نموذج التوظيف مع رفع الملفات</title>
+  <script type="text/javascript" src="https://cdn.emailjs.com/dist/email.min.js"></script>
   <style>
     body {
       font-family: 'Tajawal', sans-serif;
@@ -50,13 +50,6 @@
     button:hover {
       background: #45a049;
     }
-    .children-count {
-      display: none;
-    }
-    hr {
-      margin: 20px 0;
-      border-top: 1px solid #ddd;
-    }
   </style>
 </head>
 <body>
@@ -64,34 +57,33 @@
 <div class="container">
   <h1>نموذج التوظيف</h1>
 
-  <form action="https://formspree.io/f/xwpopgke" method="POST" enctype="multipart/form-data">
-
-    <h3>المعلومات الشخصية</h3>
+  <form id="jobForm">
+    <h3>البيانات الشخصية</h3>
     <label>الاسم الكامل (كما هو في الهوية)</label>
-    <input type="text" name="Full Name" required>
+    <input type="text" name="Full Name" id="fullName" required>
 
     <label>رقم الهوية / الإقامة</label>
-    <input type="text" name="ID Number" required>
+    <input type="text" name="ID Number" id="idNumber" required>
 
     <label>الجنسية</label>
-    <input type="text" name="Nationality" required>
+    <input type="text" name="Nationality" id="nationality" required>
 
     <label>الجنس</label>
-    <select name="Gender" required>
+    <select name="Gender" id="gender" required>
       <option value="">اختر الجنس</option>
-      <option>أنثى</option>
-      <option>ذكر</option>
+      <option value="ذكر">ذكر</option>
+      <option value="أنثى">أنثى</option>
     </select>
 
     <label>تاريخ الميلاد</label>
-    <input type="date" name="Birthdate" required>
+    <input type="date" name="Date of Birth" id="dob" required>
 
     <label>الحالة الاجتماعية</label>
-    <select name="Marital Status" required>
+    <select name="Marital Status" id="maritalStatus" required>
       <option value="">اختر الحالة الاجتماعية</option>
-      <option>أعزب</option>
-      <option>متزوج</option>
-      <option>أرمل</option>
+      <option value="أعزب">أعزب</option>
+      <option value="متزوج">متزوج</option>
+      <option value="أرمل">أرمل</option>
     </select>
 
     <label>هل لديك أبناء؟</label>
@@ -101,55 +93,60 @@
       <option value="0">لا يوجد</option>
     </select>
 
-    <div class="children-count">
+    <div id="childrenCount" style="display: none;">
       <label>عدد الأبناء</label>
-      <input type="number" name="Children Count" min="0" placeholder="أدخل عدد الأبناء">
+      <input type="number" name="Children Count" id="childrenCountInput" min="0" placeholder="أدخل عدد الأبناء">
     </div>
 
+    <hr>
+
+    <h3>معلومات الاتصال</h3>
     <label>العنوان</label>
-    <input type="text" name="Address" required>
+    <input type="text" name="Address" id="address" required>
 
     <label>رقم الهاتف</label>
-    <input type="tel" name="Mobile" required placeholder="05xxxxxxxx">
+    <input type="tel" name="Phone" id="phone" required placeholder="05xxxxxxxx">
 
     <label>رقم هاتف بديل (اختياري)</label>
-    <input type="tel" name="Alternate Mobile" placeholder="05xxxxxxxx">
+    <input type="tel" name="Alternate Phone" id="altPhone" placeholder="05xxxxxxxx">
 
     <label>البريد الإلكتروني</label>
-    <input type="email" name="Email" required>
+    <input type="email" name="Email" id="email" required>
 
     <hr>
 
     <h3>معلومات الوظيفة</h3>
-
     <label>المسمى الوظيفي</label>
-    <input type="text" name="Job Title" required>
+    <input type="text" name="Job Title" id="jobTitle" required>
 
     <label>القسم / الإدارة</label>
-    <input type="text" name="Department" required>
+    <input type="text" name="Department" id="department" required>
 
     <label>المدير المباشر</label>
-    <input type="text" name="Direct Manager" required>
+    <input type="text" name="Manager" id="manager" required>
 
     <label>مكان العمل (الفرع/المدينة)</label>
-    <input type="text" name="Workplace" required>
+    <input type="text" name="Work Location" id="workLocation" required>
 
     <label>تاريخ التعيين</label>
-    <input type="date" name="Hire Date" required>
+    <input type="date" name="Hiring Date" id="hiringDate" required>
 
     <label>نوع العقد</label>
-    <select name="Contract Type" required>
+    <select name="Contract Type" id="contractType" required>
       <option value="">اختر نوع العقد</option>
-      <option>دوام كامل</option>
-      <option>جزئي</option>
-      <option>مؤقت</option>
+      <option value="دوام كامل">دوام كامل</option>
+      <option value="جزئي">جزئي</option>
+      <option value="مؤقت">مؤقت</option>
     </select>
 
-    <label>فترة التجربة</label>
-    <input type="text" name="Probation Period" placeholder="عادة 3 - 6 أشهر" required>
+    <label>فترة التجربة (عادة 3 - 6 أشهر)</label>
+    <input type="number" name="Probation Period" id="probationPeriod" min="1" max="6" required>
 
+    <hr>
+
+    <h3>المؤهلات العلمية</h3>
     <label>آخر مؤهل علمي</label>
-    <select name="Last Degree" required>
+    <select name="Last Degree" id="lastDegree" required>
       <option value="">اختر آخر مؤهل علمي</option>
       <option>ثانوية عامة</option>
       <option>دبلوم</option>
@@ -159,64 +156,47 @@
     </select>
 
     <label>اسم الجامعة / المعهد</label>
-    <input type="text" name="University" required>
+    <input type="text" name="University" id="university" required>
 
     <label>التخصص</label>
-    <input type="text" name="Specialization" required>
+    <input type="text" name="Specialization" id="specialization" required>
 
     <label>سنة التخرج</label>
-    <select name="Graduation Year" required>
-      <option value="">اختر سنة التخرج</option>
-      <option>2015</option>
-      <option>2016</option>
-      <option>2017</option>
-      <option>2018</option>
-      <option>2019</option>
-      <option>2020</option>
-      <option>2021</option>
-      <option>2022</option>
-      <option>2023</option>
-      <option>2024</option>
-      <option>2025</option>
-    </select>
+    <input type="number" name="Graduation Year" id="graduationYear" required>
 
     <hr>
 
-    <h3>الخبرات السابقة (إن وجدت)</h3>
-
+    <h3>الخبرات السابقة</h3>
     <label>الجهات التي عمل بها</label>
-    <input type="text" name="Previous Employers">
+    <input type="text" name="Previous Employers" id="previousEmployers">
 
     <label>الفترة</label>
-    <input type="text" name="Experience Period">
+    <input type="text" name="Period" id="period">
 
     <label>المسمى الوظيفي</label>
-    <input type="text" name="Job Title Previous">
+    <input type="text" name="Previous Job Title" id="previousJobTitle">
 
     <label>سبب ترك العمل</label>
-    <input type="text" name="Reason for Leaving">
+    <input type="text" name="Reason for Leaving" id="reasonForLeaving">
 
     <hr>
 
     <h3>الدورات التدريبية أو المهارات الخاصة</h3>
-
     <label>مثل: اللغة الإنجليزية، الحاسب الآلي، برامج خاصة بالوظيفة</label>
-    <textarea name="Skills" rows="4"></textarea>
+    <input type="text" name="Skills" id="skills">
 
     <hr>
 
     <h3>بيانات الحساب البنكي</h3>
-
     <label>اسم البنك</label>
-    <input type="text" name="Bank Name" required>
+    <input type="text" name="Bank Name" id="bankName" required>
 
     <label>رقم الآيبان (لصرف الرواتب)</label>
-    <input type="text" name="IBAN" required>
+    <input type="text" name="IBAN" id="iban" required>
 
     <hr>
 
     <h3>الوثائق المرفقة</h3>
-
     <label>صورة من الهوية / الإقامة</label>
     <input type="file" name="ID Attachment" accept=".jpg,.jpeg,.png,.pdf" required>
 
@@ -238,8 +218,10 @@
     <hr>
 
     <h3>الإقرارات والتوقيعات</h3>
-    <label>إقرار بصحة البيانات</label>
-    <input type="checkbox" name="Data Declaration" required> أقر بصحة البيانات
+    <label>
+      <input type="checkbox" name="Declaration" required>
+      إقرار بصحة البيانات
+    </label>
 
     <button type="submit">إرسال</button>
   </form>
@@ -248,17 +230,38 @@
 <script>
   // عندما يختار المستخدم "يوجد" في حقل "هل لديك أبناء؟"، نظهر حقل إدخال العدد.
   document.getElementById("hasChildren").addEventListener("change", function() {
-    var childrenCountDiv = document.querySelector(".children-count");
+    var childrenCountDiv = document.getElementById("childrenCount");
     if (this.value == "1") {
       childrenCountDiv.style.display = "block";
     } else {
       childrenCountDiv.style.display = "none";
     }
   });
+
+  // إعداد EmailJS
+  (function() {
+    emailjs.init("usoVToWfmm0w7VpDf");
+  })();
+
+  // إرسال النموذج عند الضغط على زر الإرسال
+  document.getElementById("jobForm").addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    var formData = new FormData(this);
+    
+    // إرسال البيانات عبر EmailJS
+    emailjs.sendForm("service_yvck4ro", "template_9autwrr", formData).then(function(response) {
+      alert("تم إرسال البيانات بنجاح!");
+    }, function(error) {
+      alert("فشل في إرسال البيانات: " + JSON.stringify(error));
+    });
+  });
 </script>
 
 </body>
 </html>
+
+
 
 
 
