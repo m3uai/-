@@ -50,7 +50,24 @@
     button:hover {
       background: #45a049;
     }
+    #childrenCountField {
+      display: none;
+    }
   </style>
+
+  <script>
+    // JavaScript to show or hide the number of children field
+    function toggleChildrenCount() {
+      var childrenSelect = document.getElementById("children");
+      var childrenCountField = document.getElementById("childrenCountField");
+      
+      if (childrenSelect.value === "يوجد") {
+        childrenCountField.style.display = "block";
+      } else {
+        childrenCountField.style.display = "none";
+      }
+    }
+  </script>
 </head>
 <body>
 
@@ -86,18 +103,18 @@
       <option value="أرمل">أرمل</option>
     </select>
 
-    <label>عدد الأبناء (إن وجد)</label>
-    <select name="Number of Children">
-      <option value="">اختر عدد الأبناء</option>
-      <option value="0">لا يوجد</option>
-      <option value="1">1</option>
-      <option value="2">2</option>
-      <option value="3">3</option>
-      <option value="4">4</option>
-      <option value="5">5</option>
-      <option value="6">6</option>
+    <label>عدد الأبناء</label>
+    <select name="Number of Children" id="children" onchange="toggleChildrenCount()">
+      <option value="">اختر إذا كان لديك أبناء</option>
+      <option value="لا يوجد">لا يوجد</option>
+      <option value="يوجد">يوجد</option>
     </select>
-    
+
+    <div id="childrenCountField">
+      <label>عدد الأبناء</label>
+      <input type="number" name="Children Count" placeholder="أدخل العدد" min="1">
+    </div>
+
     <hr style="margin: 20px 0;">
 
     <h3>معلومات الاتصال</h3>
